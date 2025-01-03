@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: detect-private-key
+        exclude: |
+          (?x)^(
+            cmd/ssh_send_key.go
+          )$
+      - id: end-of-file-fixer
+      - id: no-commit-to-branch
+        args: [--branch, main]
+      - id: trailing-whitespace
+
+  - repo: https://github.com/detailyang/pre-commit-shell
+    rev: 1.0.5
+    hooks:
+      - id: shell-lint
+
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.63.3
+    hooks:
+      - id: golangci-lint
+        args: [--timeout=10m]
+
+  # - repo: https://github.com/semgrep/semgrep
+  #   rev: v1.89.0
+  #   hooks:
+  #     - id: semgrep
