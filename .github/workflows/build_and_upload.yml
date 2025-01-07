@@ -1,7 +1,9 @@
-name: Build and Upload Binaries
+name: Build and Release Binaries
 
 on:
   push:
+    tags:
+      - "v*.*.*" # Match semantic version tags like v0.1.2
     branches:
       - main
   pull_request:
@@ -21,15 +23,47 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.23'
+          go-version: "1.23"
 
       # Step 3: Run the build
       - name: Build binaries
         run: make build_all
 
-      # Step 4: Upload the artifacts
-      - name: Upload binaries and checksums
+      # Step 4: Conditionally upload artifacts
+      - name: Upload binaries as artifact (non-tagged build)
+        if: github.ref_type != 'tag'
         uses: actions/upload-artifact@v3
         with:
           name: binaries-and-checksums
           path: bin/*
+
+  release:
+    if: github.ref_type == 'tag' # Only run for tags
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+
+      # Step 3: Run the build (again for safety, as artifacts can't be shared between jobs)
+      - name: Build binaries
+        run: make build_all
+
+      # Step 4: Create a GitHub release and upload binaries
+      - name: Upload binaries to GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: bin/*
+          tag: ${{ github.ref_name }} # Use the pushed tag name
+          name: Release ${{ github.ref_name }} # Name the release after the tag
+          commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
