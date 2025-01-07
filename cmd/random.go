@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/atotto/clipboard"
+	"github.com/chrisgilmerproj/sink/v2/pkg/clip"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -26,6 +26,7 @@ func randomCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 	length := v.GetInt(randomFlagLength)
+	verbose := v.GetInt(flagVerbose)
 
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -40,12 +41,7 @@ func randomCmd(cmd *cobra.Command, args []string) error {
 		result[i] = charset[index.Int64()]
 	}
 	fmt.Println(string(result))
-
-	// Copy string to clipboard
-	err := clipboard.WriteAll(string(result))
-	if err != nil {
-		fmt.Printf("failed to copy random string to clipboard: %v\n", err)
-	}
+	clip.CopyToClipboard(string(result), verbose)
 
 	return nil
 }

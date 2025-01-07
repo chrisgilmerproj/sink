@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/atotto/clipboard"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/chrisgilmerproj/sink/v2/pkg/clip"
 )
 
 func uuidCmd(cmd *cobra.Command, args []string) error {
 
-	_, errViper := initViper(cmd)
+	v, errViper := initViper(cmd)
 	if errViper != nil {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
+	verbose := v.GetInt(flagVerbose)
 
 	// Generate a new UUID
 	newUUID := uuid.New()
@@ -24,12 +26,7 @@ func uuidCmd(cmd *cobra.Command, args []string) error {
 
 	// Print the UUID to the terminal
 	fmt.Println(lowercaseUUID)
-
-	// Copy UUID to clipboard
-	err := clipboard.WriteAll(lowercaseUUID)
-	if err != nil {
-		fmt.Printf("failed to copy UUID to clipboard: %v\n", err)
-	}
+	clip.CopyToClipboard(lowercaseUUID, verbose)
 
 	return nil
 }

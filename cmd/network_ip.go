@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/chrisgilmerproj/sink/v2/pkg/clip"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -25,6 +26,7 @@ func networkIPCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 	local := v.GetBool(networkFlagLocal)
+	verbose := v.GetInt(flagVerbose)
 
 	var output string
 	var err error
@@ -43,6 +45,7 @@ func networkIPCmd(cmd *cobra.Command, args []string) error {
 		log.Fatalf("Error running command chain: %v", err)
 	}
 	fmt.Print(strings.TrimSpace(output))
+	clip.CopyToClipboard(output, verbose)
 
 	return nil
 }
