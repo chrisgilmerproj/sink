@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -39,6 +40,12 @@ func randomCmd(cmd *cobra.Command, args []string) error {
 		result[i] = charset[index.Int64()]
 	}
 	fmt.Print(string(result))
+
+	// Copy string to clipboard
+	err := clipboard.WriteAll(string(result))
+	if err != nil {
+		return fmt.Errorf("failed to copy random string to clipboard: %v", err)
+	}
 
 	return nil
 }
