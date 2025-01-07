@@ -20,6 +20,30 @@ build: ## Build the binary
 install: build ## Install the binary
 	sudo cp bin/sink /usr/local/bin/sink
 
+.PHONY: build_linux_amd64
+build_linux_amd64: ## Build the binary for linux AMD64 and sha256sum file
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -installsuffix cgo -ldflags "$(LDFLAGS)" -o bin/sink_$(VERSION)_linux_amd64 main.go
+	cd bin && sha256sum sink_$(VERSION)_linux_amd64 > sink_$(VERSION)_linux_amd64.sha256
+
+.PHONY: build_linux_arm64
+build_linux_arm64: ## Build the binary for linux ARM64 and sha256sum file
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -installsuffix cgo -ldflags "$(LDFLAGS)" -o bin/sink_$(VERSION)_linux_arm64 main.go
+	cd bin && sha256sum sink_$(VERSION)_linux_arm64 > sink_$(VERSION)_linux_arm64.sha256
+
+.PHONY: build_darwin_amd64
+build_darwin_amd64: ## Build the binary for darwin AMD64 and sha256sum file
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -installsuffix cgo -ldflags "$(LDFLAGS)" -o bin/sink_$(VERSION)_darwin_amd64 main.go
+	cd bin && sha256sum sink_$(VERSION)_darwin_amd64 > sink_$(VERSION)_darwin_amd64.sha256
+
+.PHONY: build_darwin_arm64
+build_darwin_arm64: ## Build the binary for darwin ARM64 and sha256sum file
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -installsuffix cgo -ldflags "$(LDFLAGS)" -o bin/sink_$(VERSION)_darwin_arm64 main.go
+	cd bin && sha256sum sink_$(VERSION)_darwin_arm64 > sink_$(VERSION)_darwin_arm64.sha256
+
+.PHONY: build_all
+build_all: build_linux_amd64 build_linux_arm64 build_darwin_amd64 build_darwin_arm64 ## Build all binaries and sha256sum files
+	cd bin && cat *.sha256 > checksums.txt
+
 .PHONY: run
 run: ## Run the code
 	go run main.go
