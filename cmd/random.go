@@ -44,7 +44,7 @@ func randomCmd(cmd *cobra.Command, args []string) error {
 	// Copy string to clipboard
 	err := clipboard.WriteAll(string(result))
 	if err != nil {
-		return fmt.Errorf("failed to copy random string to clipboard: %v", err)
+		fmt.Printf("failed to copy random string to clipboard: %v\n", err)
 	}
 
 	return nil

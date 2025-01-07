@@ -22,14 +22,14 @@ func uuidCmd(cmd *cobra.Command, args []string) error {
 	// Convert UUID to lowercase
 	lowercaseUUID := strings.ToLower(newUUID.String())
 
+	// Print the UUID to the terminal
+	fmt.Println(lowercaseUUID)
+
 	// Copy UUID to clipboard
 	err := clipboard.WriteAll(lowercaseUUID)
 	if err != nil {
-		return fmt.Errorf("failed to copy UUID to clipboard: %v", err)
+		fmt.Printf("failed to copy UUID to clipboard: %v\n", err)
 	}
-
-	// Print the UUID to the terminal
-	fmt.Println(lowercaseUUID)
 
 	return nil
 }
