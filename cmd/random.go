@@ -39,7 +39,7 @@ func randomCmd(cmd *cobra.Command, args []string) error {
 		// Add the character at the generated index to the result
 		result[i] = charset[index.Int64()]
 	}
-	fmt.Print(string(result))
+	fmt.Println(string(result))
 
 	// Copy string to clipboard
 	err := clipboard.WriteAll(string(result))
